@@ -1,10 +1,8 @@
-// Devuelve los horarios libres para esos servicios en esa fecha.
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase-admin';
 import { obtenerDatosDelDia } from '@/lib/datos-agenda';
 import { calcularHorariosLibres } from '@/lib/disponibilidad';
-
-const ANTICIPACION_MIN = 60; // no se reserva con menos de 1 hora de anticipacion
+import { ANTICIPACION_MIN, calcularDuracion } from '@/lib/reglas-reserva';
 
 export async function GET(request) {
   const { searchParams } = new URL(request.url);
@@ -39,10 +37,7 @@ export async function GET(request) {
     return NextResponse.json({ error: 'Servicio no encontrado' }, { status: 400 });
   }
 
-  // Suma de duraciones de los servicios, y una sola preparacion (la mayor),
-  // porque se limpia una vez al terminar la visita y no despues de cada servicio.
-  const duracionMin = servicios.reduce((total, s) => total + s.duracion_minutos, 0);
-  const preparacionMin = Math.max(...servicios.map((s) => s.preparacion_minutos));
+  const { duracionMin, preparacionMin } = calcularDuracion(servicios);
 
   const datos = await obtenerDatosDelDia(fecha);
   const horarios = calcularHorariosLibres({
