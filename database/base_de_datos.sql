@@ -100,48 +100,41 @@ grant select on public.ofertas          to anon;
 grant select, insert, update, delete on all tables in schema public to service_role;
 
 
-insert into servicios (nombre, categoria, precio, duracion_minutos) values
+insert into servicios (nombre, categoria, precio, duracion_minutos, preparacion_minutos) values
   -- CEJAS
-  ('Diseño y perfilado',                           'cejas',      290, 60),
-  ('Diseño, perfilado y henna',                    'cejas',      490, 60),
-  ('Laminado, diseño y perfilado',                 'cejas',      650, 60),
-  ('Laminado, diseño, perfilado y henna',          'cejas',      900, 60),
-  ('Reconstrucción de cejas - 1 sesión',           'cejas',      600, 60),
-  ('Reconstrucción de cejas - 2 sesiones',         'cejas',     1000, 60),
-  ('Reconstrucción de cejas - 3 sesiones',         'cejas',     1400, 60),
+  ('Diseño y perfilado',                           'cejas',      290, 30, 5),
+  ('Diseño, perfilado y henna',                    'cejas',      490, 30, 5),
+  ('Laminado, diseño y perfilado',                 'cejas',      650, 30, 5),
+  ('Laminado, diseño, perfilado y henna',          'cejas',      900, 60, 5),
+  ('Reconstrucción de cejas - 1 sesión',           'cejas',      600, 45, 5),
+  ('Reconstrucción de cejas - 2 sesiones',         'cejas',     1000, 45, 5),
+  ('Reconstrucción de cejas - 3 sesiones',         'cejas',     1400, 45, 5),
 
   -- PESTAÑAS (la categoria se guarda sin ñ: 'pestanas')
-  ('Lifting de pestañas',                          'pestanas',   750, 60),
-  ('Volumen Brasilero',                            'pestanas',  1400, 60),
-  ('Volumen 3D',                                   'pestanas',  1400, 60),
-  ('Clásicas',                                     'pestanas',  1300, 60),
-  ('Efecto Rimel',                                 'pestanas',  1600, 60),
-  ('Rímel Tech U',                                 'pestanas',  1400, 60),
-  ('Retiro de pestañas',                           'pestanas',   250, 60),
+  ('Lifting de pestañas',                          'pestanas',   750, 45, 5),
+  ('Volumen Brasilero',                            'pestanas',  1400, 90, 5),
+  ('Volumen 3D',                                   'pestanas',  1400, 90, 5),
+  ('Clásicas',                                     'pestanas',  1300, 90, 5),
+  ('Rímel Tech U',                                 'pestanas',  1400, 90, 5),
+  ('Retiro de pestañas',                           'pestanas',   250, 30, 5),
 
   -- MAQUILLAJE
-  ('Maquillaje Social',                            'maquillaje', 1000, 60),
-  ('Maquillaje Artístico',                         'maquillaje', 1300, 60),
+  ('Maquillaje Social',                            'maquillaje', 1000, 60, 5),
+  ('Maquillaje Artístico',                         'maquillaje', 1300, 60, 5),
 
   -- COMBOS
-  ('Lifting, diseño y perfilado de cejas',         'combos',     850, 60),
-  ('Lifting, henna, diseño y perfilado de cejas',  'combos',    1100, 60),
-  ('Lifting, laminado, diseño y perfilado',        'combos',    1250, 60),
-  ('Lifting, laminado, henna, diseño y perfilado', 'combos',    1400, 60),
+  ('Lifting, diseño y perfilado de cejas',         'combos',     850, 60, 5),
+  ('Lifting, henna, diseño y perfilado de cejas',  'combos',    1100, 60, 5),
+  ('Lifting, laminado, diseño y perfilado',        'combos',    1250, 60, 5),
+  ('Lifting, laminado, henna, diseño y perfilado', 'combos',    1400, 60, 5),
 
   -- UÑAS
-  ('Semipermanente',                               'unas',       500, 60),
-  ('Kapping gel',                                  'unas',       700, 60),
-  ('Soft gel',                                     'unas',       800, 60),
-  ('Diseño extra',                                 'unas',       100, 60),
-  ('Retiro + manicura',                            'unas',       300, 60),
-  ('Arreglo de hasta 3 uñas',                      'unas',        50, 60);
-
-
-
--- Para ir completando las duraciones reales, por ejemplo:
--- update servicios set duracion_minutos = 45, preparacion_minutos = 10
---   where nombre = 'Diseño y perfilado';
+  ('Semipermanente',                               'unas',       500, 120, 5),
+  ('Kapping gel',                                  'unas',       700, 180, 5),
+  ('Soft gel',                                     'unas',       800, 180, 5),
+  ('Diseño extra',                                 'unas',       100, 20, 5),
+  ('Retiro + manicura',                            'unas',       300, 60, 5),
+  ('Arreglo de hasta 3 uñas',                      'unas',        50, 45, 5);
 
 insert into horarios_trabajo (dia_semanal, horario_inicio, horario_fin) values
   (1, '09:00', '13:00'), (1, '15:00', '19:00'),
@@ -149,7 +142,3 @@ insert into horarios_trabajo (dia_semanal, horario_inicio, horario_fin) values
   (3, '09:00', '13:00'), (3, '15:00', '19:00'),
   (4, '09:00', '13:00'), (4, '15:00', '19:00'),
   (5, '09:00', '13:00'), (5, '15:00', '19:00');
-
--- Para cambiar un horario, por ejemplo:
--- update horarios_trabajo set horario_inicio = '10:00', horario_fin = '13:00'
---   where dia_semanal = 1;
