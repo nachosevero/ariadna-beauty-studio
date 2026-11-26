@@ -29,3 +29,18 @@ export async function obtenerAgendaDelDia(fecha) {
     if (error) throw new Error(error.message);
     return data;
 }
+
+// Bloqueos que todavia no terminaron (los pasados no interesan), por fecha.
+// Quien la llame tiene que haber usado connection() antes: lee la hora actual.
+export async function obtenerBloqueosFuturos() {
+    await requerirAdmin();
+
+    const { data, error } = await supabaseAdmin
+    .from('dias_libres')
+    .select('id, inicio, fin, razon')
+    .gt('fin', new Date().toISOString())
+    .order('inicio');
+
+    if (error) throw new Error(error.message);
+    return data;
+}

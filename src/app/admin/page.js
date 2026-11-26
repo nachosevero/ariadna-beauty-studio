@@ -2,7 +2,7 @@
 import { Suspense } from 'react';
 import Link from 'next/link';
 import { connection } from 'next/server';
-import { cerrarSesion } from './actions';
+import { cerrarSesion, cambiarEstadoTurno } from './actions';
 import { obtenerAgendaDelDia } from '@/lib/datos-admin';
 import {
     hoyEnUruguay,
@@ -11,7 +11,9 @@ import {
     horaUruguay,
     fechaLarga,
     enlaceWhatsApp,
+    estadosSiguientes,
 } from '@/lib/utilidades-admin';
+import BotonAccion from '@/components/BotonAccion';
 
 export const metadata = {
     title: 'Agenda | Ariadna Beauty Studio',
@@ -26,6 +28,14 @@ const ETIQUETA_ESTADO = {
     cancelado: 'Cancelado',
     completado: 'Completado',
     no_mostrar: 'No vino',
+};
+
+// Texto de cada boton segun el estado al que lleva
+const TEXTO_BOTON = {
+    confirmado: 'Confirmar',
+    completado: 'Completado',
+    no_mostrar: 'No vino',
+    cancelado: 'Cancelar turno',
 };
 
 // Esta parte lee cookies y la URL (datos que cambian en cada pedido), por eso
@@ -115,6 +125,27 @@ async function Agenda({ searchParams }) {
                 </p>
 
                 {t.notas && <p className="mt-1 text-sm">Nota: {t.notas}</p>}
+
+                {estadosSiguientes(t.estado).length > 0 && (
+                <form action={cambiarEstadoTurno} className="mt-3 flex flex-wrap gap-2">
+                    <input type="hidden" name="id" value={t.id} />
+                    {estadosSiguientes(t.estado).map((estado) => (
+                    <BotonAccion
+                        key={estado}
+                        name="estado"
+                        value={estado}
+                        mensaje={
+                        estado === 'cancelado'
+                            ? `¿Cancelar el turno de ${t.clientes.nombre_completo}? Esta acción no se puede deshacer.`
+                            : undefined
+                        }
+                        className="rounded border px-3 py-1 text-sm"
+                    >
+                        {TEXTO_BOTON[estado]}
+                    </BotonAccion>
+                    ))}
+                </form>
+                )}
             </li>
             );
         })}
@@ -128,11 +159,16 @@ export default function PaginaAdmin({ searchParams }) {
     <main className="mx-auto max-w-2xl p-6">
         <header className="mb-6 flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Agenda</h1>
-        <form action={cerrarSesion}>
+        <div className="flex items-center gap-4">
+            <Link href="/admin/bloqueos" className="text-sm underline">
+            Bloquear días
+            </Link>
+            <form action={cerrarSesion}>
             <button type="submit" className="text-sm underline">
-            Cerrar sesión
+                Cerrar sesión
             </button>
-        </form>
+            </form>
+        </div>
         </header>
 
         <Suspense fallback={<p>Cargando agenda…</p>}>
