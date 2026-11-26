@@ -73,3 +73,21 @@ test('respeta la anticipacion minima para reservar', () => {
   // Primer momento permitido: 10:10, y los horarios salen cada 30 min
   assert.equal(r[0], '10:30');
 });
+
+test('la preparacion puede pasarse del cierre, pero el servicio debe entrar', () => {
+  const r = horas(calcular({ duracionMin: 30, preparacionMin: 5 }));
+  // 12:30 a 13:00 es el servicio; la preparacion llega hasta 13:05 y se permite
+  assert.ok(r.includes('12:30'), '12:30 entra: el servicio termina justo a las 13:00');
+  assert.ok(!r.includes('13:00'), '13:00 esta fuera de la franja');
+  assert.ok(r.includes('18:30'), '18:30 entra en la franja de la tarde');
+});
+
+test('la preparacion bloquea el turno que sigue', () => {
+  const turnos = [
+    { inicio: '2026-12-07T10:00:00-03:00', fin: '2026-12-07T11:00:00-03:00' },
+  ];
+  const r = horas(calcular({ duracionMin: 30, preparacionMin: 5, turnos }));
+  // 09:30 a 10:00 es el servicio, pero la preparacion llega a 10:05 y pisa el turno
+  assert.ok(!r.includes('09:30'), '09:30 se pisa con el turno por la preparacion');
+  assert.ok(r.includes('09:00'), '09:00 termina (con preparacion) a las 09:35');
+});
